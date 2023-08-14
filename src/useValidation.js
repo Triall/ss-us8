@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import validator from 'validator';
 
 export function useValidation(initialState) {
     const [data, setData] = useState(initialState);
@@ -11,7 +12,7 @@ export function useValidation(initialState) {
         if (!data.lastName) newErrors.lastName = "Last name is required";
         if (!data.email) {
             newErrors.email = "Email is required";
-        } else if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[\w-]+$/i.test(data.email)) {
+        } else if (!validator.isEmail(data.email)) {
             newErrors.email = "Email is not valid";
         }
         if (!data.message) newErrors.message = "Message is required";

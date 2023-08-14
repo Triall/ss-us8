@@ -1,0 +1,65 @@
+Here is the react hook
+
+import { useState, useCallback } from 'react';
+
+export function useValidation(initialState) {
+    const [data, setData] = useState(initialState);
+    const [errors, setErrors] = useState({});
+
+    const validate = useCallback(() => {
+        let newErrors = {};
+
+        if (!data.firstName) newErrors.firstName = "First name is required";
+        if (!data.lastName) newErrors.lastName = "Last name is required";
+        if (!data.email) {
+            newErrors.email = "Email is required";
+        } else if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[\w-]+$/i.test(data.email)) {
+            newErrors.email = "Email is not valid";
+        }
+        if (!data.message) newErrors.message = "Message is required";
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0; // if no errors, it's valid
+    }, [data]);
+
+    return [data, setData, errors, validate];
+}
+
+
+I want you to refactor it with usage of Validator npm package. Functionality should stay the same
+ChatGPT
+Certainly! The validator package provides various functions to validate different types of input, including emails. Here's a refactored version of your custom hook using the validator package:
+
+First, you need to install the package:
+bash
+Copy code
+npm install validator
+Now, let's refactor the useValidation hook:
+javascript
+Copy code
+import { useState, useCallback } from 'react';
+import validator from 'validator';
+
+export function useValidation(initialState) {
+    const [data, setData] = useState(initialState);
+    const [errors, setErrors] = useState({});
+
+    const validate = useCallback(() => {
+        let newErrors = {};
+
+        if (!data.firstName) newErrors.firstName = "First name is required";
+        if (!data.lastName) newErrors.lastName = "Last name is required";
+        if (!data.email) {
+            newErrors.email = "Email is required";
+        } else if (!validator.isEmail(data.email)) {
+            newErrors.email = "Email is not valid";
+        }
+        if (!data.message) newErrors.message = "Message is required";
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0; // if no errors, it's valid
+    }, [data]);
+
+    return [data, setData, errors, validate];
+}
+The main change here is replacing the regex test for email validation with validator.isEmail(data.email), which is more reliable and easier to understand. This way, you leverage the validator package's capabilities, ensuring better email validation and potentially making the hook more maintainable in the future if you decide to add more validation rules.
