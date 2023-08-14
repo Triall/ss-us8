@@ -9,8 +9,11 @@ export function useValidation(initialState) {
 
         if (!data.firstName) newErrors.firstName = "First name is required";
         if (!data.lastName) newErrors.lastName = "Last name is required";
-        if (!data.email) newErrors.email = "Email is required";
-        if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[\w-]+$/i.test(data.email)) newErrors.email = "Email is not valid";
+        if (!data.email) {
+            newErrors.email = "Email is required";
+        } else if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[\w-]+$/i.test(data.email)) {
+            newErrors.email = "Email is not valid";
+        }
         if (!data.message) newErrors.message = "Message is required";
 
         setErrors(newErrors);
