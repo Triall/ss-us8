@@ -1,0 +1,152 @@
+I'm workin on the react application setup with redux store.
+I did the initial create-react-app setup.
+
+Now I need to Create a store for the application to store first name, last name, email and message. Can you help me?
+
+
+ChatGPT
+Of course! Here's a step-by-step guide to set up a Redux store for your React application to store first name, last name, email, and message:
+
+Install Redux and React-Redux
+
+First, you'll need to install Redux and the React bindings for Redux:
+
+bash
+Copy code
+npm install redux react-redux
+Create Action Types
+
+In src/redux/actions/actionTypes.js:
+
+javascript
+Copy code
+export const SET_FIRST_NAME = "SET_FIRST_NAME";
+export const SET_LAST_NAME = "SET_LAST_NAME";
+export const SET_EMAIL = "SET_EMAIL";
+export const SET_MESSAGE = "SET_MESSAGE";
+Create Action Creators
+
+In src/redux/actions/index.js:
+
+javascript
+Copy code
+import * as actionTypes from './actionTypes';
+
+export const setFirstName = (firstName) => ({
+    type: actionTypes.SET_FIRST_NAME,
+    payload: firstName
+});
+
+export const setLastName = (lastName) => ({
+    type: actionTypes.SET_LAST_NAME,
+    payload: lastName
+});
+
+export const setEmail = (email) => ({
+    type: actionTypes.SET_EMAIL,
+    payload: email
+});
+
+export const setMessage = (message) => ({
+    type: actionTypes.SET_MESSAGE,
+    payload: message
+});
+Create Reducers
+
+Create a reducer to handle the actions. Let's say, userReducer in src/redux/reducers/userReducer.js:
+
+javascript
+Copy code
+import * as actionTypes from '../actions/actionTypes';
+
+const initialState = {
+    firstName: '',
+    lastName: '',
+    email: '',
+    message: ''
+};
+
+const userReducer = (state = initialState, action) => {
+    switch (action.type) {
+        case actionTypes.SET_FIRST_NAME:
+            return { ...state, firstName: action.payload };
+        case actionTypes.SET_LAST_NAME:
+            return { ...state, lastName: action.payload };
+        case actionTypes.SET_EMAIL:
+            return { ...state, email: action.payload };
+        case actionTypes.SET_MESSAGE:
+            return { ...state, message: action.payload };
+        default:
+            return state;
+    }
+}
+
+export default userReducer;
+Combine Reducers (if you have or will have more than one reducer)
+
+For this example, I'll assume you might have more reducers in the future.
+
+In src/redux/reducers/index.js:
+
+javascript
+Copy code
+import { combineReducers } from 'redux';
+import userReducer from './userReducer';
+
+const rootReducer = combineReducers({
+    user: userReducer
+    // other reducers go here
+});
+
+export default rootReducer;
+Create the Store
+
+In src/redux/store.js:
+
+javascript
+Copy code
+import { createStore } from 'redux';
+import rootReducer from './reducers';
+
+const store = createStore(
+    rootReducer,
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()  // This line is optional but it helps you use Redux DevTools
+);
+
+export default store;
+Provide the Store to the Application
+
+Now, in src/index.js, wrap your App component with the Provider component and pass in your store:
+
+javascript
+Copy code
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import store from './redux/store';
+import App from './App';
+
+ReactDOM.render(
+    <Provider store={store}>
+        <App />
+    </Provider>,
+    document.getElementById('root')
+);
+Usage in Components
+
+You can now use useDispatch to dispatch actions and useSelector to select data from the state in your components:
+
+javascript
+Copy code
+import { useDispatch, useSelector } from 'react-redux';
+import { setFirstName, setLastName, setEmail, setMessage } from './redux/actions';
+
+function UserInfoComponent() {
+    const dispatch = useDispatch();
+    const firstName = useSelector(state => state.user.firstName);
+
+    return (
+        // your JSX here...
+    );
+}
+You now have a Redux store set up for your application to handle user information! Adjust as needed for your specific application needs.
